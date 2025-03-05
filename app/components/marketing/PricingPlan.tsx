@@ -1,4 +1,13 @@
-function PricingPlan({ title, price, perks, icon }) {
+import { Link } from "@remix-run/react";
+
+type PricingPlanProps = {
+  title: string;
+  price: string;
+  perks: string[];
+  icon: React.ElementType;
+};
+
+function PricingPlan({ title, price, perks, icon }: PricingPlanProps) {
   const Icon = icon;
   return (
     <article>
@@ -15,8 +24,8 @@ function PricingPlan({ title, price, perks, icon }) {
             <li key={perk}>{perk}</li>
           ))}
         </ol>
-        <div className='actions'>
-          <a href="/not-implemented">Learn More</a>
+        <div className="actions">
+          <Link to="/learn-more">Learn More</Link>
         </div>
       </div>
     </article>

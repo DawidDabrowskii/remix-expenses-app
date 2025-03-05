@@ -1,6 +1,11 @@
-import { FaExclamationCircle } from 'react-icons/fa';
+import { FaExclamationCircle } from "react-icons/fa";
 
-function Error({ title, children }) {
+type ErrorProps = {
+  title: string;
+  children: React.ReactNode;
+};
+
+function Error({ title, children }: ErrorProps) {
   return (
     <div className="error">
       <div className="icon">

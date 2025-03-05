@@ -1,7 +1,17 @@
-import ExpenseListItem from './ExpenseListItem';
+import ExpenseListItem from "./ExpenseListItem";
 
-function ExpensesList({ expenses }) {
+type Expense = {
+  id: string;
+  title: string;
+  amount: number;
+  date: string;
+};
 
+type ExpensesListProps = {
+  expenses: Expense[];
+};
+
+function ExpensesList({ expenses }: ExpensesListProps) {
   return (
     <ol id="expenses-list">
       {expenses.map((expense) => (

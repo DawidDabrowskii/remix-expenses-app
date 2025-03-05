@@ -1,10 +1,21 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { ExpensesLayout } from "~/layout/expenses.layout";
+import ExpenseForm from "~/components/expenses/ExpenseForm";
+import expensesStyles from "~/styles/expenses.css?url";
+import Modal from "~/components/util/Modal";
 
 export function ExpensesDetailsPage() {
   const expense = useLoaderData<typeof loader>();
 
-  return <h1>Expenses Details Page {expense}</h1>;
+  return (
+    <ExpensesLayout>
+      <Modal onClose={() => {}}>
+        <ExpenseForm />
+      </Modal>
+      <h1>Expenses Details Page {expense}</h1>
+    </ExpensesLayout>
+  );
 }
 
 export default ExpensesDetailsPage;
@@ -20,4 +31,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
   }
 
   return expenseId;
+}
+
+export function links() {
+  return [{ rel: "stylesheet", href: expensesStyles }];
 }
