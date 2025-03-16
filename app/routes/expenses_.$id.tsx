@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { ExpensesLayout } from "~/layout/expenses.layout";
 import ExpenseForm from "~/components/expenses/ExpenseForm";
 import expensesStyles from "~/styles/expenses.css?url";
@@ -8,9 +8,15 @@ import Modal from "~/components/util/Modal";
 export function ExpensesDetailsPage() {
   const expense = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
+  function closeHandler() {
+    navigate("/expenses");
+  }
+
   return (
     <ExpensesLayout>
-      <Modal onClose={() => {}}>
+      <Modal onClose={closeHandler}>
         <ExpenseForm />
       </Modal>
       <h1>Expenses Details Page {expense}</h1>

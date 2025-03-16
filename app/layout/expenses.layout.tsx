@@ -1,4 +1,6 @@
 import ExpensesList from "~/components/expenses/ExpensesList";
+import ExpensesHeader from "~/components/navigation/ExpensesHeader";
+import expensesStyles from "~/styles/expenses.css?url";
 
 export const expenses = [
   {
@@ -33,9 +35,16 @@ type ExpensesLayoutProps = {
 
 export function ExpensesLayout({ children }: ExpensesLayoutProps) {
   return (
-    <main>
-      {children}
-      <ExpensesList expenses={expenses} />
-    </main>
+    <>
+      <ExpensesHeader />
+      <main>
+        {children}
+        <ExpensesList expenses={expenses} />
+      </main>
+    </>
   );
+}
+
+export function links() {
+  return [{ rel: "stylesheet", href: expensesStyles }];
 }

@@ -2,9 +2,13 @@ import { FaDollarSign, FaChartBar, FaArrowRight } from "react-icons/fa";
 
 import { Link } from "@remix-run/react";
 
+import marketingStyles from "~/styles/marketing.css?url";
+import sharedStyles from "~/styles/shared.css?url";
+import { MainLayout } from "~/layout/main.layout";
+
 export default function Index() {
   return (
-    <main>
+    <MainLayout>
       <section className="marketing-section">
         <header>
           <FaDollarSign />
@@ -43,6 +47,13 @@ export default function Index() {
           </div>
         </div>
       </section>
-    </main>
+    </MainLayout>
   );
+}
+
+export function links() {
+  return [
+    { rel: "stylesheet", href: marketingStyles },
+    { rel: "stylesheet", href: sharedStyles },
+  ];
 }

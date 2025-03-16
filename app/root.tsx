@@ -7,8 +7,6 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
-import MainHeader from "~/components/navigation/MainHeader";
-
 import sharedStyles from "~/styles/shared.css?url";
 
 export function Layout() {
@@ -31,7 +29,6 @@ export function Layout() {
         <Links />
       </head>
       <body>
-        <MainHeader />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

@@ -1,6 +1,8 @@
 import { FaTrophy, FaHandshake } from "react-icons/fa";
-
-import PricingPlan from "~/components/marketing/PricingPlan";
+import { LinksFunction } from "@remix-run/node";
+import PricingPlan from "../components/marketing/PricingPlan";
+import marketingStyles from "~/styles/marketing.css?url";
+import { MainLayout } from "~/layout/main.layout";
 
 const PRICING_PLANS = [
   {
@@ -21,7 +23,7 @@ const PRICING_PLANS = [
 
 export default function PricingPage() {
   return (
-    <main id="pricing">
+    <MainLayout id="pricing">
       <h2>Great Product, Simple Pricing</h2>
       <ol id="pricing-plans">
         {PRICING_PLANS.map((plan) => (
@@ -35,6 +37,10 @@ export default function PricingPage() {
           </li>
         ))}
       </ol>
-    </main>
+    </MainLayout>
   );
 }
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: marketingStyles },
+];

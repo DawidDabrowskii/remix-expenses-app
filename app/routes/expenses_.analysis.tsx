@@ -1,14 +1,14 @@
 import Chart from "~/components/expenses/Chart";
 import ExpenseStatistics from "~/components/expenses/ExpenseStatistics";
 import expensesStyles from "~/styles/expenses.css?url";
-import { expenses } from "~/layout/expenses.layout";
+import { expenses, ExpensesLayout } from "../layout/expenses.layout";
 
 export function ExpensesAnalysisPage() {
   return (
-    <main>
+    <ExpensesLayout>
       <Chart expenses={expenses} />
       <ExpenseStatistics expenses={expenses} />
-    </main>
+    </ExpensesLayout>
   );
 }
 

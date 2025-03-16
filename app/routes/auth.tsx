@@ -1,12 +1,13 @@
 import { LinksFunction } from "@remix-run/node";
 import authStyles from "~/styles/auth.css?url";
 import AuthForm from "~/components/auth/AuthForm";
+import { MainLayout } from "~/layout/main.layout";
 
 export function AuthPage() {
   return (
-    <main>
+    <MainLayout>
       <AuthForm />
-    </main>
+    </MainLayout>
   );
 }
 
