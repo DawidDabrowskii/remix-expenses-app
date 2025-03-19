@@ -1,5 +1,6 @@
-import { expenses } from "~/layout/expenses.layout";
+import { getExpenses } from "~/data/expenses.server";
 
-export function loader() {
+export async function loader() {
+  const expenses = await getExpenses();
   return expenses;
 }

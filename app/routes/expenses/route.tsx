@@ -1,41 +1,27 @@
 import { LinksFunction } from "@remix-run/node";
-import { Outlet } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import ExpensesList from "../../components/expenses/ExpensesList";
 import expensesStyles from "../../styles/expenses.css?url";
 import { ExpensesLayout } from "~/layout/expenses.layout";
+import { getExpenses } from "~/data/expenses.server";
 
-export const expenses = [
-  {
-    id: "1",
-    amount: 123,
-    title: "Groceries",
-    date: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    amount: 123,
-    title: "Groceries",
-    date: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    amount: 123,
-    title: "Groceries",
-    date: new Date().toISOString(),
-  },
-  {
-    id: "4",
-    amount: 123,
-    title: "Groceries",
-    date: new Date().toISOString(),
-  },
-];
+type SerializedExpense = {
+  id: string;
+  title: string;
+  amount: number;
+  date: string;
+  dateAdded?: string;
+};
 
 export default function ExpensesRoute() {
+  const loaderData = useLoaderData<typeof loader>();
+
+  const expensesData = loaderData?.expenses || [];
+
   return (
     <ExpensesLayout>
       <Outlet />
-      <ExpensesList expenses={expenses} />
+      <ExpensesList expenses={expensesData} />
     </ExpensesLayout>
   );
 }
@@ -43,3 +29,28 @@ export default function ExpensesRoute() {
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: expensesStyles },
 ];
+
+export async function loader() {
+  try {
+    const expenses = await getExpenses();
+
+    const serializedExpenses: SerializedExpense[] = expenses.map((expense) => ({
+      id: expense.id || "",
+      title: expense.title,
+      amount: expense.amount,
+      date:
+        expense.date instanceof Date
+          ? expense.date.toISOString()
+          : String(expense.date),
+      dateAdded:
+        expense.dateAdded instanceof Date
+          ? expense.dateAdded.toISOString()
+          : String(expense.dateAdded),
+    }));
+
+    return Response.json({ expenses: serializedExpenses });
+  } catch (error) {
+    console.error("Failed to load expenses:", error);
+    return { expenses: [] };
+  }
+}

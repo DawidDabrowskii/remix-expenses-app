@@ -1,3 +1,5 @@
+import React from "react";
+
 type ModalProps = {
   children: React.ReactNode;
   onClose: () => void;
@@ -5,11 +7,32 @@ type ModalProps = {
 
 function Modal({ children, onClose }: ModalProps) {
   return (
-    <button className="modal-backdrop" onClick={onClose}>
-      <dialog className="modal" open>
+    <>
+      <div
+        className="modal-backdrop"
+        onClick={onClose}
+        onKeyDown={onClose}
+        role="button"
+        tabIndex={0}
+        style={{
+          position: "fixed",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 100,
+        }}
+      />
+      <div
+        className="modal"
+        style={{
+          position: "fixed",
+          zIndex: 101,
+          backgroundColor: "white",
+          padding: "1rem",
+          borderRadius: "0.5rem",
+        }}
+      >
         {children}
-      </dialog>
-    </button>
+      </div>
+    </>
   );
 }
 
