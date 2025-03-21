@@ -1,36 +1,56 @@
+import { LinksFunction } from "@remix-run/node";
 import {
   Form,
   Link,
   useActionData,
   useLoaderData,
   useNavigation,
+  useParams,
 } from "@remix-run/react";
-import { loader } from "~/routes/expenses_.$id";
+
+import expensesStyles from "~/styles/expenses.css?url";
+
+type Expense = {
+  title: string;
+  amount: number | string;
+  date: string;
+};
 
 function ExpenseForm() {
   const validationErrors = useActionData();
-  const expenseData = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData();
+  const params = useParams();
   const today = new Date().toISOString().slice(0, 10);
   const navigation = useNavigation();
 
-  const defaultValues = expenseData
-    ? {
-        title: expenseData.title,
-        amount: expenseData.amount,
-        date: expenseData.date,
-      }
-    : {
-        title: "",
-        amount: "",
-        date: "",
-      };
+  if (params.id && !loaderData) {
+    <div>Invalid expense id</div>;
+  }
 
-  console.log("expenseData", expenseData);
+  const defaultValues =
+    loaderData && typeof loaderData === "object" && "title" in loaderData
+      ? {
+          title: (loaderData as Expense).title,
+          amount:
+            typeof (loaderData as Expense).amount === "number"
+              ? (loaderData as Expense).amount.toString()
+              : (loaderData as Expense).amount,
+          date: (loaderData as Expense).date?.slice(0, 10) || "",
+        }
+      : {
+          title: "",
+          amount: "",
+          date: "",
+        };
 
   const isSubmitting = navigation.state === "submitting";
 
   return (
-    <Form method="post" className="form" id="expense-form">
+    <Form
+      method={loaderData ? "patch" : "post"}
+      className="form"
+      id="expense-form"
+    >
       <p>
         <label htmlFor="title">Expense Title</label>
         <input
@@ -64,9 +84,7 @@ function ExpenseForm() {
             name="date"
             max={today}
             required
-            defaultValue={
-              defaultValues.date ? defaultValues.date.slice(0, 10) : ""
-            }
+            defaultValue={defaultValues.date}
           />
         </p>
       </div>
@@ -94,3 +112,7 @@ function ExpenseForm() {
 }
 
 export default ExpenseForm;
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: expensesStyles },
+];

@@ -69,8 +69,59 @@ export async function getExpenses() {
 }
 
 export async function getExpense(id: string) {
-  const db = await connectToMongoDB();
-  const collection = db.collection("Expense");
-  const expense = await collection.findOne({ _id: new ObjectId(id) });
-  return expense;
+  try {
+    const db = await connectToMongoDB();
+    const collection = db.collection("Expense");
+
+    const expense = await collection.findOne({ _id: new ObjectId(id) });
+
+    if (!expense) {
+      throw new Error(`Expense with ID ${id} not found`);
+    }
+
+    return {
+      ...expense,
+      id: expense._id.toString(),
+    };
+  } catch (error) {
+    console.error(`Failed to get expense with ID ${id}:`, error);
+    throw new Error(`Failed to get expense with ID ${id}`);
+  }
+}
+
+export async function updateExpense(id: string, expenseData: Partial<Expense>) {
+  try {
+    const db = await connectToMongoDB();
+    const collection = db.collection("Expense");
+
+    await collection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          title: expenseData.title,
+          amount: expenseData.amount,
+          date: expenseData.date,
+        },
+      }
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error(`Failed to update expense with ID ${id}:`, error);
+    throw new Error(`Failed to update expense with ID ${id}`);
+  }
+}
+
+export async function deleteExpense(id: string) {
+  try {
+    const db = await connectToMongoDB();
+    const collection = db.collection("Expense");
+
+    await collection.deleteOne({ _id: new ObjectId(id) });
+
+    return { success: true };
+  } catch (error) {
+    console.error(`Failed to delete expense with ID ${id}:`, error);
+    throw new Error(`Failed to delete expense with ID ${id}`);
+  }
 }
