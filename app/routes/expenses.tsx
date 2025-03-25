@@ -1,4 +1,4 @@
-import { LinksFunction } from "@remix-run/node";
+import { LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import {
   Link,
   Outlet,
@@ -10,6 +10,7 @@ import ExpensesList from "../components/expenses/ExpensesList";
 import expensesStyles from "../styles/expenses.css?url";
 import { ExpensesLayout } from "../layout/expenses.layout";
 import { getExpenses } from "../data/expenses.server";
+import { getUserFromSession } from "~/data/auth.server";
 
 // Export this type for use in child routes
 export type SerializedExpense = {
@@ -53,7 +54,13 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: expensesStyles },
 ];
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const userId = await getUserFromSession(request);
+
+  if (!userId) {
+    return redirect("/auth");
+  }
+
   try {
     const expenses = await getExpenses();
 
@@ -71,7 +78,13 @@ export async function loader() {
           : String(expense.dateAdded),
     }));
 
-    return Response.json({ expenses: serializedExpenses }, { status: 200 });
+    return Response.json(
+      {
+        expenses: serializedExpenses,
+        user: userId,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Failed to load expenses:", error);
     throw new Error("Failed to load expenses");

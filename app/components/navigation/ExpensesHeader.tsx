@@ -2,7 +2,7 @@ import { NavLink } from "@remix-run/react";
 
 import Logo from "../util/Logo";
 
-function ExpensesHeader() {
+function ExpensesHeader({ user }: { user: string }) {
   return (
     <header id="main-header">
       <Logo />
@@ -18,9 +18,7 @@ function ExpensesHeader() {
           </li>
         </ul>
       </nav>
-      <nav id="cta-nav">
-        <button className="cta">Logout</button>
-      </nav>
+      <nav id="cta-nav">{user && <button className="cta">Logout</button>}</nav>
     </header>
   );
 }

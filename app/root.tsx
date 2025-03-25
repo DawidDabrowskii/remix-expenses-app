@@ -6,11 +6,18 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
+  useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 
 import sharedStyles from "~/styles/shared.css?url";
 import Error from "~/components/util/Error";
+import { getUserFromSession } from "~/data/auth.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const userId = await getUserFromSession(request);
+  return { user: userId };
+}
 
 function Document({ children }: { children: React.ReactNode }) {
   return (
