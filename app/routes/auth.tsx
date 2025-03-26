@@ -45,16 +45,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         );
       }
 
-      console.log("result", result);
-
       return result;
     } else {
       const result = await signup({
         email: credentials.email as string,
         password: credentials.password as string,
       });
-
-      console.log("result", result);
 
       if ("error" in result && result.error) {
         return Response.json(

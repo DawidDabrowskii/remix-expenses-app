@@ -6,7 +6,6 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
-  useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 
@@ -16,6 +15,7 @@ import { getUserFromSession } from "~/data/auth.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserFromSession(request);
+  console.log("Root loader - userId:", userId);
   return { user: userId };
 }
 
@@ -47,16 +47,12 @@ function Document({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function Layout() {
+export default function App() {
   return (
     <Document>
       <Outlet />
     </Document>
   );
-}
-
-export default function App() {
-  return <Outlet />;
 }
 
 export function ErrorBoundary() {

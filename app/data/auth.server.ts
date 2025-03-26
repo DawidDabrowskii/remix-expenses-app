@@ -11,9 +11,11 @@ if (!SESSION_SECRET) {
 async function createUserSession(userId: string, redirectTo: string) {
   const session = await sessionStorage.getSession();
   session.set("userId", userId);
-
+  const cookie = await sessionStorage.commitSession(session);
   return redirect(redirectTo, {
-    headers: { "Set-Cookie": await sessionStorage.commitSession(session) },
+    headers: {
+      "Set-Cookie": cookie,
+    },
   });
 }
 
@@ -24,6 +26,8 @@ const sessionStorage = createCookieSessionStorage({
     sameSite: "lax",
     maxAge: 30 * 24 * 60 * 60, // 30 days
     httpOnly: true,
+    path: "/",
+    name: "expenses_session",
   },
 });
 
@@ -78,8 +82,6 @@ export async function login({
     where: { email },
   });
 
-  console.log("existingUser", existingUser);
-
   if (!existingUser) {
     return {
       error: { message: "Invalid credentials", status: 401 },
@@ -98,19 +100,26 @@ export async function login({
 }
 
 export async function getUserFromSession(request: Request) {
-  const session = await sessionStorage.getSession(
-    request.headers.get("Cookie")
-  );
+  const cookieHeader = request.headers.get("Cookie");
 
-  console.log("session", session);
-
+  const session = await sessionStorage.getSession(cookieHeader);
   const userId = session.get("userId");
-
-  console.log("userId", userId);
 
   if (!userId) {
     return null;
   }
 
   return userId;
+}
+
+export async function destroySession(request: Request) {
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+
+  const sessionCookie = await sessionStorage.destroySession(session);
+
+  return redirect("/", {
+    headers: { "Set-Cookie": sessionCookie },
+  });
 }
